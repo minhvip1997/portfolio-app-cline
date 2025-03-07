@@ -17,15 +17,11 @@ const MobileSection = styled.section<MobileSectionProps>`
   align-items: center;
   justify-content: flex-start;
   padding: 2rem 1.5rem;
-  margin-top: 70px;
-  overflow-y: auto;
   background-color: ${(props) =>
     props.backgroundWhite ? "white" : "transparent"};
-  -webkit-overflow-scrolling: touch;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  flex-shrink: 0;
 `;
 
 const ContentWrapper = styled.div`
@@ -35,43 +31,52 @@ const ContentWrapper = styled.div`
   padding-bottom: 2rem;
 `;
 
-const MobileContent: React.FC<{ section: string }> = ({ section }) => {
-  switch (section) {
-    case "about":
-      return (
-        <MobileSection backgroundWhite>
-          <ContentWrapper>
-            <About />
-          </ContentWrapper>
-        </MobileSection>
-      );
-    case "experience":
-      return (
-        <MobileSection backgroundWhite>
-          <ContentWrapper>
-            <Experience />
-          </ContentWrapper>
-        </MobileSection>
-      );
-    case "projects":
-      return (
-        <MobileSection backgroundWhite>
-          <ContentWrapper>
-            <Projects />
-          </ContentWrapper>
-        </MobileSection>
-      );
-    case "contact":
-      return (
-        <MobileSection backgroundWhite>
-          <ContentWrapper>
-            <Contact />
-          </ContentWrapper>
-        </MobileSection>
-      );
-    default:
-      return null;
+const MobileContainer = styled.div`
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  background-color: white;
+  z-index: 990;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
+
+  & > ${MobileSection} {
+    height: 100%;
+  }
+`;
+
+const MobileContent: React.FC = () => {
+  return (
+    <MobileContainer>
+      <MobileSection backgroundWhite id="about">
+        <ContentWrapper>
+          <About />
+        </ContentWrapper>
+      </MobileSection>
+      <MobileSection backgroundWhite id="experience">
+        <ContentWrapper>
+          <Experience />
+        </ContentWrapper>
+      </MobileSection>
+      <MobileSection backgroundWhite id="projects">
+        <ContentWrapper>
+          <Projects />
+        </ContentWrapper>
+      </MobileSection>
+      <MobileSection backgroundWhite id="contact">
+        <ContentWrapper>
+          <Contact />
+        </ContentWrapper>
+      </MobileSection>
+    </MobileContainer>
+  );
 };
 
 export default MobileContent;

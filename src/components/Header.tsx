@@ -226,8 +226,15 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = () => {
-    setIsMenuOpen(false);
+  const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    const targetId = event.currentTarget.getAttribute("href")?.slice(1);
+    const targetElement = document.getElementById(targetId || "");
+
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+      setIsMenuOpen(false);
+    }
   };
 
   return (

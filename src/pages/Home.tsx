@@ -7,7 +7,6 @@ import About from "./About";
 import Experience from "../components/Experience";
 import Projects from "./Projects";
 import Contact from "./Contact";
-import MobileContent from "../components/MobileContent";
 
 // Device breakpoints
 const BREAKPOINTS = {
@@ -18,14 +17,35 @@ const BREAKPOINTS = {
 
 const HomeContainer = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   scroll-behavior: smooth;
-  overflow-y: auto;
+  overflow: hidden;
   padding-top: 70px; /* Height of the header */
 `;
 
-const Section = styled.section`
-  min-height: 100vh;
+const ScrollContainer = styled.div`
+  width: 100%;
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+  scroll-snap-type: y proximity;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: ${BREAKPOINTS.iphone14ProMax}) {
+    scroll-snap-type: y mandatory;
+  }
+`;
+
+interface SectionProps {
+  id?: string;
+}
+
+const Section = styled.section<SectionProps>`
+  min-height: calc(100vh - 70px);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -33,19 +53,14 @@ const Section = styled.section`
   justify-content: center;
   padding: 2rem;
   scroll-snap-align: start;
+  scroll-snap-stop: ${(props) => (props.id === "home" ? "always" : "normal")};
 
   @media (max-width: ${BREAKPOINTS.iphone14ProMax}) {
-    display: none;
+    padding: 1rem;
   }
 `;
 
-const HomeSection = styled(Section)`
-  @media (max-width: ${BREAKPOINTS.iphone14ProMax}) {
-    display: flex;
-  }
-`;
-
-const Introduction = styled(HomeSection)`
+const IntroSection = styled(Section).attrs({ id: "home" })`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -198,7 +213,7 @@ const Home = () => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 430); // iPhone 14 Pro Max width
+      setIsMobile(window.innerWidth <= 430);
     };
 
     checkMobile();
@@ -217,60 +232,53 @@ const Home = () => {
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
+
   return (
     <>
       <Header />
       <HomeContainer>
-        {isMobile && currentSection !== "home" ? (
-          <MobileContent section={currentSection} />
-        ) : (
-          <>
-            <Introduction id="home">
-              <ProfileImage>
-                <img src={profilePhoto} alt="Profile" />
-              </ProfileImage>
-              <IntroContent>
-                <Title>Welcome to My Portfolio</Title>
-                <Description>
-                  Hi, I'm a Full Stack Developer passionate about creating
-                  amazing web applications. I specialize in building responsive,
-                  user-friendly websites and applications using modern
-                  technologies.
-                </Description>
-                <SocialLinks>
-                  <GithubLink
-                    href="https://github.com/minhvip1997"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <GithubIcon />
-                    GitHub Profile
-                  </GithubLink>
-                </SocialLinks>
-              </IntroContent>
-            </Introduction>
+        <ScrollContainer>
+          <IntroSection>
+            <ProfileImage>
+              <img src={profilePhoto} alt="Profile" />
+            </ProfileImage>
+            <IntroContent>
+              <Title>Welcome to My Portfolio</Title>
+              <Description>
+                Hi, I'm a Full Stack Developer passionate about creating amazing
+                web applications. I specialize in building responsive,
+                user-friendly websites and applications using modern
+                technologies.
+              </Description>
+              <SocialLinks>
+                <GithubLink
+                  href="https://github.com/minhvip1997"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <GithubIcon />
+                  GitHub Profile
+                </GithubLink>
+              </SocialLinks>
+            </IntroContent>
+          </IntroSection>
 
-            {!isMobile && (
-              <>
-                <Section id="about">
-                  <About />
-                </Section>
+          <Section id="about" data-section="about">
+            <About />
+          </Section>
 
-                <Section id="experience">
-                  <Experience />
-                </Section>
+          <Section id="experience" data-section="experience">
+            <Experience />
+          </Section>
 
-                <Section id="projects">
-                  <Projects />
-                </Section>
+          <Section id="projects" data-section="projects">
+            <Projects />
+          </Section>
 
-                <Section id="contact">
-                  <Contact />
-                </Section>
-              </>
-            )}
-          </>
-        )}
+          <Section id="contact" data-section="contact">
+            <Contact />
+          </Section>
+        </ScrollContainer>
       </HomeContainer>
     </>
   );
