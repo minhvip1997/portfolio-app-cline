@@ -18,26 +18,35 @@ const BREAKPOINTS = {
 const HomeContainer = styled.div`
   width: 100%;
   min-height: 100vh;
-  scroll-behavior: smooth;
-  overflow: hidden;
-  padding-top: 70px; /* Height of the header */
-`;
-
-const ScrollContainer = styled.div`
-  width: 100%;
-  height: calc(100vh - 70px);
+  position: relative;
   overflow-y: auto;
-  scroll-snap-type: y proximity;
-  -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 
   @media (min-width: ${BREAKPOINTS.iphone14ProMax}) {
-    scroll-snap-type: y mandatory;
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: #f5f5f5;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #ddd;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: #ccc;
+    }
   }
+
+  @media (max-width: ${BREAKPOINTS.iphone14ProMax}) {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`;
+
+const MainContent = styled.div`
+  padding-top: 70px; /* Height of the header */
 `;
 
 interface SectionProps {
@@ -45,18 +54,19 @@ interface SectionProps {
 }
 
 const Section = styled.section<SectionProps>`
-  min-height: calc(100vh - 70px);
+  min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  scroll-snap-align: start;
-  scroll-snap-stop: ${(props) => (props.id === "home" ? "always" : "normal")};
 
   @media (max-width: ${BREAKPOINTS.iphone14ProMax}) {
+    min-height: calc(100vh - 70px);
     padding: 1rem;
+    scroll-snap-align: start;
+    scroll-snap-stop: ${(props) => (props.id === "home" ? "always" : "normal")};
   }
 `;
 
@@ -237,7 +247,7 @@ const Home = () => {
     <>
       <Header />
       <HomeContainer>
-        <ScrollContainer>
+        <MainContent>
           <IntroSection>
             <ProfileImage>
               <img src={profilePhoto} alt="Profile" />
@@ -278,7 +288,7 @@ const Home = () => {
           <Section id="contact" data-section="contact">
             <Contact />
           </Section>
-        </ScrollContainer>
+        </MainContent>
       </HomeContainer>
     </>
   );

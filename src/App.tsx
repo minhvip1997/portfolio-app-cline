@@ -91,7 +91,7 @@ function App() {
   return (
     <Router>
       <div>
-        <Header>
+        {/* <Header>
           <Nav>
             <Link to="/">
               <span className="icon">🏠</span>
@@ -114,7 +114,7 @@ function App() {
               <span className="text">Experience</span>
             </Link>
           </Nav>
-        </Header>
+        </Header> */}
 
         <Main>
           <Routes>
